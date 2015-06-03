@@ -24,32 +24,14 @@ var numRows = 30;
 var numColumns = 10;
 var bufferHeight = 4;
 
-var blockSize;
-var canvasWidth;
-var canvasHeight;
-var canvasOffset;
-
-var canDrop;
-var fastDrop;
-var firstMove;
-var completeRow;
-
-var level;
-var score;
-var rowCount;
-var interval;
-var startTime;
-var elapsedTime;
-var saveInterval;
+var blockSize, canvasWidth, canvasHeight, canvasOffset, canDrop, fastDrop, firstMove, completeRow, 
+level, score, rowCount, interval, startTime, elapsedTime, saveInterval, touchx, touchy;
 
 var grid = [];
 var events = [];
 var oldCopy = [];
 var newCopy = [];
 var completeRows = [];
-
-var touchx;
-var touchy;
 
 var element = document.getElementById("body");
 var canvas = document.getElementById("gameCanvas");
