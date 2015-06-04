@@ -6,7 +6,7 @@
 
 
 body {
-  vertical-align: center;
+  vertical-align: middle;
   margin: 10px auto;
   font-family: "Press Start 2P", courier;
   font-size: 24px;
@@ -44,7 +44,7 @@ body {
   height: 100%;
   background: #EAFCB6;
   position: absolute;
-  vertical-align: center;
+  vertical-align: middle;
 }
 
 .intro-container {
@@ -79,8 +79,6 @@ body {
   margin-right: 20px;
   border: 1px solid;
   padding: 2px;
-  -webkit-border-radius: 4;
-  -moz-border-radius: 4;
   border-radius: 4px;
 }
 
@@ -89,8 +87,6 @@ body {
   display: inline-block;
   border: 1px solid;
   padding: 5px;
-  -webkit-border-radius: 4;
-  -moz-border-radius: 4;
   border-radius: 4px;
 }
 
@@ -100,8 +96,6 @@ body {
   display: inline-block;
   border: 1px solid;
   padding: 8px;
-  -webkit-border-radius: 4;
-  -moz-border-radius: 4;
   border-radius: 4px;
 }
 
