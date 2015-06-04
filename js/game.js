@@ -63,7 +63,6 @@ function Shape(type, color, column, rotation, offset) {
       this.array[2] = [0, 0, new Block(color), 0];
       this.array[3] = [0, 0, new Block(color), 0];
       break;
-
     case 1: // square 
       this.row = 3;
       this.size = 2;
@@ -72,7 +71,6 @@ function Shape(type, color, column, rotation, offset) {
       this.array[0] = [new Block(color), new Block(color)];
       this.array[1] = [new Block(color), new Block(color)];
       break;
-
     case 2:
       this.row = 2;
       this.size = 3;
@@ -82,7 +80,6 @@ function Shape(type, color, column, rotation, offset) {
       this.array[1] = [new Block(color), new Block(color), new Block(color)];
       this.array[2] = [0, 0, new Block(color)];
       break;
-
     case 3:
       this.row = 2;
       this.size = 3;
@@ -92,7 +89,6 @@ function Shape(type, color, column, rotation, offset) {
       this.array[1] = [new Block(color), new Block(color), new Block(color)];
       this.array[2] = [new Block(color), 0, 0];
       break;
-
     case 4:
       this.row = 2;
       this.size = 3;
@@ -102,7 +98,6 @@ function Shape(type, color, column, rotation, offset) {
       this.array[1] = [0, new Block(color), new Block(color)];
       this.array[2] = [new Block(color), new Block(color), 0];
       break;
-
     case 5:
       this.row = 2;
       this.size = 3;
@@ -112,9 +107,7 @@ function Shape(type, color, column, rotation, offset) {
       this.array[1] = [new Block(color), new Block(color), new Block(color)];
       this.array[2] = [0, new Block(color), 0];
       break;
-
     case 6:
-
       this.row = 2;
       this.size = 3;
       this.maxRotations = 2;
@@ -333,7 +326,6 @@ function play() {
   interval = 600;
   saveInterval = 600;
   startTime = getGameDate();
-
   createGrid();
   newShape();
   animate();
@@ -346,7 +338,9 @@ function createGrid() {
     grid[i] = []
     for (var j = 0; j < numColumns; j++) {
       if (i >= numRows - bufferHeight) {
-        grid[i][j] = 2; // this is a buffer area to stop overflow
+      	// This is a buffer to stop overflow
+      	// when spinning next to sides bottom
+        grid[i][j] = 2; 
       } else {
         grid[i][j] = 0;
       }
@@ -382,7 +376,6 @@ function animate() {
     var update = true;
     //check touch events to see if they are possible
     switch (newEvent) {
-
       case 0:
         for (var i = 0; i < shape.restBlocks.length; i++) {
           if (grid[shape.restBlocks[i].row + shape.row + 1][shape.restBlocks[i].column + shape.column] != 0) {
@@ -393,7 +386,6 @@ function animate() {
           }
         }
         break;
-
       case 1:
         for (var i = 0; i < shape.size; i++) {
           if (shape.sideBlocks[i].right !== -1) {
@@ -405,7 +397,6 @@ function animate() {
           }
         }
         break;
-
       case 2:
         for (var i = 0; i < shape.size; i++) {
           if (shape.sideBlocks[i].left !== -1) {
@@ -423,7 +414,6 @@ function animate() {
           update = false;
           break;
         }
-
         var rotateCounter = 0;
         for (var i = 0; i < shape.size; i++) {
           for (var j = 0; j < shape.size; j++) {
@@ -436,10 +426,6 @@ function animate() {
             }
           }
         }
-        break;
-
-      case 6: // game over
-        return;
         break;
     }
 
@@ -463,19 +449,15 @@ function animate() {
         case 0:
           shape.row++;
           break
-
         case 1:
           shape.column++;
           break;
-
         case 2:
           shape.column--;
           break;
-
         case 3:
           rotateAntiClockwise();
           break;
-
         case 4:
           if (!fastDrop) {
 
@@ -487,7 +469,6 @@ function animate() {
             fastDrop = false;
             interval = saveInterval;
           }
-
           break;
         case 5:
           rotateClockwise();
@@ -507,7 +488,6 @@ function animate() {
             }
           }
         }
-
         // use old copy to delete itself 
         for (var i = 0; i < shape.size; i++) {
           for (var j = 0; j < shape.size; j++) {
@@ -536,7 +516,6 @@ function animate() {
             }
           }
         }
-
         // update references to the arrays  
         oldCopy = newCopy.slice(0);
         // fill new block
@@ -580,13 +559,14 @@ function dropTimeout() {
 
 function drop() {
 
-  // check for complete lines
+  // JUST SCHEDULE ANOTHER DROP
   if (canDrop) {
     events.unshift(0);
     dropTimeout();
     return;
-  } else {
 
+  } else {
+    // IF THE BLOCK HAS LANDED CHECK FOR COMPLETE ROWS
     if (checkComplete) {
       completeRows = [];
       for (var i = 0; i < shape.size; i++) {
@@ -596,7 +576,6 @@ function drop() {
             counter++;
           }
         }
-
         if (counter === 10) {
           if (!fastDrop) {
             fastDrop = true;
@@ -607,7 +586,7 @@ function drop() {
           completeRow = true;
         }
       }
-
+      // CHECK FOR COMPLETE ROW
       if (completeRow) {
         for (var i = 0; i < completeRows.length; i++) {
           for (var j = 0; j < numColumns; j++) {
@@ -618,20 +597,27 @@ function drop() {
         checkComplete = false;
         dropTimeout();
         return;
-
       } else {
-
-        if (canDrop == false && shape.row <= 5) {
-          gameOver();
+        // CHECK FOR GAME OVER
+        if (canDrop == false && shape.row < 5) {
+            var finishTime = getGameDate();
+            elapsedSeconds = (startTime - finishTime) * 1000;
+            if (confirm("Game Over!\n\nReplay?") == true) {
+                play();
+            } else {
+                window.location.href = '../../#!/projects';;
+            } 
           return;
         } else {
-          // no line cleared
+          // NOTHING CLEARED , CREATE NEW BLOCK
           newShape();
           return;
         }
       }
+
     } else {
-      // animation complete, update scores
+      // COMPLETE ROW FOUND ON LAST PASS
+      // ANIMATE AND UPDATE SCORES
       var counter = completeRows[0] - 1;
       for (var i = counter; i >= 0; i--) {
         for (var j = 0; j < numColumns; j++) {
@@ -676,15 +662,9 @@ function drop() {
   }
 }
 
-function gameOver() {
 
-  var finishTime = getGameDate();
-  elapsedSeconds = (startTime - finishTime) * 1000;
-  events.unshift(6);
-}
-
+//  EVENT LISTENERS
 element.addEventListener("touchstart", function(e) {
-
   if (canDrop) {
     var touch = e.changedTouches[0];
     touchx = parseInt(touch.pageX);
@@ -693,16 +673,16 @@ element.addEventListener("touchstart", function(e) {
   e.preventDefault();
 }, false);
 
-element.addEventListener("touchmove", function(e) {
 
+element.addEventListener("touchmove", function(e) {
   if (canDrop) {
     var touchobj = e.changedTouches[0];
   }
   e.preventDefault();
 }, false);
 
-element.addEventListener("touchend", function(e) {
 
+element.addEventListener("touchend", function(e) {
   if (canDrop) {
     var touch = e.changedTouches[0];
     var distancex = parseInt(touch.pageX) - touchx;
@@ -716,25 +696,20 @@ element.addEventListener("touchend", function(e) {
     if (posx > 4 || posy > 4) {
       if (posx > 0 || posy > 0) {
         if (posx > posy) {
-
           if (distancex > 0) {
             touchEvent = 1; // move right
-
           } else {
             touchEvent = 2; // move left
           }
         } else {
-
           if (distancey < 0) {
             touchEvent = 3; // rotate anticlockwise
           } else {
-
             touchEvent = 4; // fast drop   
           }
         }
       }
     } else {
-
       touchEvent = 5; // rotate clockwise
     }
     updateGrid(touchEvent);
@@ -744,7 +719,6 @@ element.addEventListener("touchend", function(e) {
 
 
 document.addEventListener("keydown", function(e) {
-
   if (canDrop) {
     switch (e.keyCode) {
       case 37:
@@ -772,7 +746,6 @@ document.addEventListener("keydown", function(e) {
 }, false);
 
 document.getElementById('start').onclick = function () { 
-
   document.getElementById('intro').classList.toggle('fade');
   play();
 };
